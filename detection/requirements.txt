@@ -1,7 +1,7 @@
 # Детекция
 #numpy               #
 #scikit-build        #
-setuptools wheel    #
+#setuptools wheel    #
 ultralytics         # YOLOv8
 # Обработка фото
 opencv-python       # Для работы с изображениями
@@ -9,3 +9,4 @@ pillow              # Для обработки изображений
 # Сервер
 fastapi             # Для создания REST API
 uvicorn             # Для запуска сервера
+python-multipart
