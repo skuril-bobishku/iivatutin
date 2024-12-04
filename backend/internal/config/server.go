@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/joho/godotenv"
 	"os"
+	"strconv"
 )
 
 func SetServerDomain() string {
@@ -33,4 +34,20 @@ func GetServerDirectory() string {
 	}
 
 	return os.Getenv("FILE_DIRECTORY")
+}
+
+func GetMaxImagesCount() int {
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		panic(err)
+	}
+
+	temp := os.Getenv("MAX_PARSE_IMAGE_COUNT")
+	count, err := strconv.Atoi(temp)
+	if err != nil {
+		panic(err)
+	}
+
+	return count
 }
