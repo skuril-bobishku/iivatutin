@@ -1,4 +1,4 @@
-package log
+package status_ctx
 
 import "github.com/gofiber/fiber/v2"
 
@@ -8,7 +8,7 @@ func NotRequired() (int, fiber.Map) {
 }
 
 func BadFileFormat() (int, fiber.Map) {
-	return fiber.StatusBadRequest,
+	return fiber.StatusUnsupportedMediaType,
 		fiber.Map{"error": "Not .zip file format"}
 }
 
@@ -20,6 +20,14 @@ func NotCreatedDirectory() (int, fiber.Map) {
 func NotSavedFile() (int, fiber.Map) {
 	return fiber.StatusInternalServerError,
 		fiber.Map{"error": "Failed to save file"}
+}
+
+func FileSaved(path string) (int, fiber.Map) {
+	return fiber.StatusContinue,
+		fiber.Map{
+			"message": "File was saved successfully",
+			"path":    path,
+		}
 }
 
 func NotOpenZIP() (int, fiber.Map) {
@@ -42,7 +50,22 @@ func NotOpenFile() (int, fiber.Map) {
 		fiber.Map{"error": "Failed to open file"}
 }
 
+func NotCreateFile() (int, fiber.Map) {
+	return fiber.StatusInternalServerError,
+		fiber.Map{"error": "Failed to create file"}
+}
+
 func NotCopyFile() (int, fiber.Map) {
 	return fiber.StatusInternalServerError,
 		fiber.Map{"error": "Failed to copy file"}
+}
+
+func NotModifyFile() (int, fiber.Map) {
+	return fiber.StatusInternalServerError,
+		fiber.Map{"error": "Failed to modify file"}
+}
+
+func FileUnzip(path string) (int, fiber.Map) {
+	return fiber.StatusContinue,
+		fiber.Map{"message": "File was unzip successfully"}
 }

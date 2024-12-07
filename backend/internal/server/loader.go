@@ -1,68 +1,110 @@
 package server
 
 import (
-	"archive/zip"
 	"github.com/gofiber/fiber/v2"
-	"github.com/skuril-bobishku/iivatutin/backend/internal/server/log"
+	"github.com/klauspost/compress/zip"
+	stc "github.com/skuril-bobishku/iivatutin/backend/internal/server/status_ctx"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
 )
 
-func SaveZIP(c *fiber.Ctx, directory string) string {
+func SaveZIP(c *fiber.Ctx, directory string) func() (int, fiber.Map) {
 	file, err := c.FormFile("file")
-	log.CheckStatus(c, err, log.NotRequired)
+	if err != nil {
+		return stc.NotRequired
+	}
 
 	if filepath.Ext(file.Filename) != ".zip" {
-		log.SendStatus(c, log.BadFileFormat)
+		return stc.BadFileFormat
 	}
 
 	_, err = os.Stat(directory)
 	if os.IsNotExist(err) {
 		err = os.Mkdir(directory, os.ModePerm)
-		log.CheckStatus(c, err, log.NotCreatedDirectory)
+		if err != nil {
+			return stc.NotCreatedDirectory
+		}
 	}
 
 	err = c.SaveFile(file, directory+file.Filename)
-	log.CheckStatus(c, err, log.NotSavedFile)
+	if err != nil {
+		return stc.NotSavedFile
+	}
 
-	return file.Filename
+	return func() (int, fiber.Map) {
+		return stc.FileSaved(file.Filename)
+	}
 }
 
-func Unzip(c *fiber.Ctx, directory string, filename string) {
-	r, err := zip.OpenReader(directory + filename)
-	log.CheckStatus(c, err, log.NotOpenZIP)
+func Unzip(c *fiber.Ctx, directory string, fullname string) func() (int, fiber.Map) {
+	fileExt := filepath.Ext(fullname)
+	fileName := strings.TrimSuffix(fullname, fileExt)
+
+	r, err := zip.OpenReader(directory + fullname)
+	if err != nil {
+		return stc.NotOpenZIP
+	}
 	defer r.Close()
 
+	directory = filepath.Join(directory, fileName)
+
 	for _, f := range r.File {
+		if f.NonUTF8 {
+			f.Name = fileName
+			/*decoder := charmap.CodePage866.NewDecoder()
+			decodedName, err := decoder.String(f.Name)
+			if err != nil {
+				fmt.Println("Ошибка декодирования:", err)
+			}
+
+			f.Name = decodedName*/
+		}
+
 		filePath := filepath.Join(directory, f.Name)
 
 		relPath, err := filepath.Rel(filePath, directory)
-		log.CheckStatus(c, err, log.NotRelativePath)
+		if err != nil {
+			return stc.NotRelativePath
+		}
 
 		if !filepath.IsAbs(relPath) && !strings.HasPrefix(relPath, "..") {
-			log.SendStatus(c, log.NotSafePath)
+			return stc.NotSafePath
 		}
 
 		if f.FileInfo().IsDir() {
-			err = os.Mkdir(filePath, os.ModePerm)
-			log.CheckStatus(c, err, log.NotCreatedDirectory)
+			err = os.Mkdir(filepath.Dir(filePath), os.ModePerm)
+			if err != nil {
+				return stc.NotCreatedDirectory
+			}
 			continue
 		}
 
 		err = os.MkdirAll(filepath.Dir(filePath), os.ModePerm)
-		log.CheckStatus(c, err, log.NotCreatedDirectory)
-
-		outFile, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
-		log.CheckStatus(c, err, log.NotOpenFile)
-		defer outFile.Close()
+		if err != nil {
+			return stc.NotCreatedDirectory
+		}
 
 		rc, err := f.Open()
-		log.CheckStatus(c, err, log.NotOpenFile)
+		if err != nil {
+			return stc.NotOpenFile
+		}
 		defer rc.Close()
 
+		outFile, err := os.Create(filePath)
+		if err != nil {
+			return stc.NotCreateFile
+		}
+		defer outFile.Close()
+
 		_, err = io.Copy(outFile, rc)
-		log.CheckStatus(c, err, log.NotCopyFile)
+		if err != nil {
+			return stc.NotCopyFile
+		}
+	}
+
+	return func() (int, fiber.Map) {
+		return stc.FileUnzip(directory)
 	}
 }

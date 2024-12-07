@@ -6,15 +6,29 @@ import (
 )
 
 func UploadZIP(c *fiber.Ctx) error {
-	dir := config.GetServerDirectory()
-	filename := SaveZIP(c, dir)
+	directory := config.GetServerDirectory()
 
-	Unzip(c, dir, filename)
+	status := SaveZIP(c, directory)
+	code, json := status()
+
+	filename, exists := json["path"]
+	if exists {
+		return c.Status(code).JSON(json)
+	}
+
+	status = Unzip(c, directory, filename.(string))
+	code, json = status()
+
+	if code != fiber.StatusContinue {
+		return c.Status(code).JSON(json)
+	}
+
+	filename, _ = json["path"]
+	//return c.Status(code).JSON(json)
 
 	return c.Status(fiber.StatusContinue).JSON(fiber.Map{
-		"status":  "success",
 		"message": "File uploaded successfully",
-		"path":    dir + filename,
+		"path":    directory + filename.(string),
 	})
 }
 

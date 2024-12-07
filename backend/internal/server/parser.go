@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/gocolly/colly"
 	"github.com/gofiber/fiber/v2"
-	"github.com/skuril-bobishku/iivatutin/backend/internal/server/log"
 )
 
 func CheckQuery(c *fiber.Ctx) {
@@ -13,7 +12,7 @@ func CheckQuery(c *fiber.Ctx) {
 	url := c.Query("url", "")
 	fmt.Print(url)
 	if url == "" {
-		log.SendStatus(c, log.NotRequiredUrl)
+		//stc.SendStatus(c, stc.NotRequiredUrl)
 	}
 
 	/*count := c.QueryInt("count", maxCount)
