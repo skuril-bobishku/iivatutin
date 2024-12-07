@@ -10,26 +10,14 @@ func UploadZIP(c *fiber.Ctx) error {
 
 	status := SaveZIP(c, directory)
 	code, json := status()
-
-	filename, exists := json["path"]
-	if exists {
+	filename, exists := json["path"].(string)
+	if !exists {
 		return c.Status(code).JSON(json)
 	}
 
-	status = Unzip(c, directory, filename.(string))
+	status = Unzip(c, directory, filename)
 	code, json = status()
-
-	if code != fiber.StatusContinue {
-		return c.Status(code).JSON(json)
-	}
-
-	filename, _ = json["path"]
-	//return c.Status(code).JSON(json)
-
-	return c.Status(fiber.StatusContinue).JSON(fiber.Map{
-		"message": "File uploaded successfully",
-		"path":    directory + filename.(string),
-	})
+	return c.Status(code).JSON(json)
 }
 
 func ParseImages(c *fiber.Ctx) error {

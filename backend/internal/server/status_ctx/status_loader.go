@@ -66,6 +66,9 @@ func NotModifyFile() (int, fiber.Map) {
 }
 
 func FileUnzip(path string) (int, fiber.Map) {
-	return fiber.StatusContinue,
-		fiber.Map{"message": "File was unzip successfully"}
+	return fiber.StatusCreated,
+		fiber.Map{
+			"message": "File was unzip successfully",
+			"path":    path,
+		}
 }

@@ -1,9 +1,11 @@
 package server
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/klauspost/compress/zip"
 	stc "github.com/skuril-bobishku/iivatutin/backend/internal/server/status_ctx"
+	"golang.org/x/text/encoding/charmap"
 	"io"
 	"os"
 	"path/filepath"
@@ -52,14 +54,14 @@ func Unzip(c *fiber.Ctx, directory string, fullname string) func() (int, fiber.M
 
 	for _, f := range r.File {
 		if f.NonUTF8 {
-			f.Name = fileName
-			/*decoder := charmap.CodePage866.NewDecoder()
+			//f.Name = fileName
+			decoder := charmap.CodePage866.NewDecoder()
 			decodedName, err := decoder.String(f.Name)
 			if err != nil {
 				fmt.Println("Ошибка декодирования:", err)
 			}
 
-			f.Name = decodedName*/
+			f.Name = decodedName
 		}
 
 		filePath := filepath.Join(directory, f.Name)
@@ -74,7 +76,7 @@ func Unzip(c *fiber.Ctx, directory string, fullname string) func() (int, fiber.M
 		}
 
 		if f.FileInfo().IsDir() {
-			err = os.Mkdir(filepath.Dir(filePath), os.ModePerm)
+			err = os.MkdirAll(filepath.Dir(filePath), os.ModePerm)
 			if err != nil {
 				return stc.NotCreatedDirectory
 			}
@@ -105,6 +107,6 @@ func Unzip(c *fiber.Ctx, directory string, fullname string) func() (int, fiber.M
 	}
 
 	return func() (int, fiber.Map) {
-		return stc.FileUnzip(directory)
+		return stc.FileUnzip(filepath.Join(directory, fullname))
 	}
 }
