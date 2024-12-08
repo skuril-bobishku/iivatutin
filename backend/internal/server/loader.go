@@ -12,7 +12,7 @@ import (
 	"strings"
 )
 
-func SaveZIP(c *fiber.Ctx, directory string) func() (int, fiber.Map) {
+func saveZIP(c *fiber.Ctx, directory string) func() (int, fiber.Map) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		return stc.NotRequired
@@ -40,7 +40,7 @@ func SaveZIP(c *fiber.Ctx, directory string) func() (int, fiber.Map) {
 	}
 }
 
-func Unzip(c *fiber.Ctx, directory string, fullname string) func() (int, fiber.Map) {
+func unzip(c *fiber.Ctx, directory string, fullname string) func() (int, fiber.Map) {
 	fileExt := filepath.Ext(fullname)
 	fileName := strings.TrimSuffix(fullname, fileExt)
 
