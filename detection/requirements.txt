@@ -1,7 +1,6 @@
 # Детекция
 #numpy               #
-#scikit-build        #
-#setuptools wheel    #
+scikit-build        #
 ultralytics         # YOLOv8
 # Обработка фото
 opencv-python       # Для работы с изображениями
