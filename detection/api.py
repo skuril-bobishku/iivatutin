@@ -3,22 +3,19 @@ from infer import train
 
 app = FastAPI()
 
-
 @app.post("/train")
-async def train():
+async def train(path: str):
     """
     Выполнить инференс изображения.
 
     Args:
-        file (UploadFile): Загруженное изображение.
+        path (str): Загруженное изображение.
 
     Returns:
         dict: Результаты предсказания.
     """
-    results = train("temp.jpg", "yolo/model/best.pt")
+    results = train(path, "yolo/model/best.pt")
     return {"results": results.tolist()}
-
-
 
 
 if __name__ == "__main__":

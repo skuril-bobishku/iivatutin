@@ -6,18 +6,17 @@ from sklearn.model_selection import train_test_split
 import shutil
 from ultralytics import YOLO
 
-def train(source_dir: str, data_yaml: str, model_path: str, epochs: int = 50):
+def train(source_dir: str, epochs: int = 50):
     """
     Обучение YOLO модели.
 
     Args:
         source_dir (str): Путь к основному каталогу.
-        data_yaml (str): Путь к файлу конфигурации данных (YAML).
-        model_path (str): Путь для сохранения модели.
         epochs (int): Количество эпох обучения.
     """
     class_names = prepare(source_dir)
     yaml_name = create_yaml(source_dir, class_names)
+    return load_model(yaml_name, epochs)
 
 
 # === ШАГ 1: ПОДГОТОВКА ДАННЫХ ===
@@ -80,16 +79,28 @@ def create_yaml(source_dir: str, class_names: List[str]):
 
 
 # === ШАГ 3: ОБУЧЕНИЕ МОДЕЛИ YOLOv11 ДЛЯ ЗАДАЧИ КЛАССИФИКАЦИИ ===
-def load_model(yolo_model: str=None):
+def load_model(yaml_file: str, epochs: int, yolo_model: str=None):
     # Загрузка модели YOLOv11 для классификации
     model = YOLO(yolo_model)
     
     # Обучение модели классификации
     model.train(
         data    = yaml_file,        # Путь к yaml файлу
-        epochs  = 50                # Количество эпох
+        epochs  =  epochs           # Количество эпох
     )
+
+    # Валидация модели
+    model.val() # results =
+    return model
+
+
+# === ШАГ 4: ТЕСТИРОВАНИЕ МОДЕЛИ НА ИЗОБРАЖЕНИЯХ ===
+def predict(destination_dir: str, model):
+    # Предсказание на одном изображении
+    result = model.predict(source=destination_dir)
+    return result
 
 
 if __name__ == "__main__":
-    train("dataset.yaml", "yolo/model/best.pt")
+    model = train("dataset.yaml", 80)
+    predict( model)
