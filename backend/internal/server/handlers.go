@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-func UploadZIP(c *fiber.Ctx) error {
+func uploadZIP(c *fiber.Ctx) error {
 	directory := config.GetServerDirectory()
 
 	status := saveZIP(c, directory)
@@ -21,7 +21,7 @@ func UploadZIP(c *fiber.Ctx) error {
 	return c.Status(code).JSON(json)
 }
 
-func ParseImages(c *fiber.Ctx) error {
+func parseImages(c *fiber.Ctx) error {
 	var url string
 	var count, skip int
 	images := &[]string{}
@@ -46,7 +46,13 @@ func ParseImages(c *fiber.Ctx) error {
 	return c.Status(code).JSON(json)
 }
 
-func StartTrainYOLO(c *fiber.Ctx) error {
+func trainYOLO(c *fiber.Ctx) error {
+	//dir := config.GetServerDirectory()
+
+	c.Query("url", "")
+
+	//dir = filepath.Join(dir, getUrlName(url, 2))
+
 	files := []fiber.Map{
 		{"id": 1, "name": "123"},
 		{"id": 2, "name": "456"},

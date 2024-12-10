@@ -1,7 +1,7 @@
 import os
 from typing import List
 
-from ..utils import aug_data
+from detection.utils import aug_data
 from sklearn.model_selection import train_test_split
 import shutil
 from ultralytics import YOLO
@@ -16,7 +16,7 @@ def train(source_dir: str, epochs: int = 50):
     """
     class_names = prepare(source_dir)
     yaml_name = create_yaml(source_dir, class_names)
-    return load_model(yaml_name, epochs)
+    return create_model(yaml_name, epochs, source_dir)
 
 
 # === ШАГ 1: ПОДГОТОВКА ДАННЫХ ===
@@ -52,7 +52,7 @@ def prepare(source_dir: str):
         for img_path in val_images:
             shutil.copy(img_path, val_dir)
             
-        return class_names
+    return class_names
 
 
 # === ШАГ 2: СОЗДАНИЕ ФАЙЛА КОНФИГУРАЦИИ YAML ===
@@ -79,7 +79,7 @@ def create_yaml(source_dir: str, class_names: List[str]):
 
 
 # === ШАГ 3: ОБУЧЕНИЕ МОДЕЛИ YOLOv11 ДЛЯ ЗАДАЧИ КЛАССИФИКАЦИИ ===
-def load_model(yaml_file: str, epochs: int, yolo_model: str=None):
+def create_model(yaml_file: str, epochs: int, model_path: str, yolo_model: str=None):
     # Загрузка модели YOLOv11 для классификации
     model = YOLO(yolo_model)
     
@@ -91,16 +91,14 @@ def load_model(yaml_file: str, epochs: int, yolo_model: str=None):
 
     # Валидация модели
     model.val() # results =
+    model.save(model_path)
     return model
 
 
 # === ШАГ 4: ТЕСТИРОВАНИЕ МОДЕЛИ НА ИЗОБРАЖЕНИЯХ ===
-def predict(destination_dir: str, model):
+def predict(destination_dir: str, model_path: str):
     # Предсказание на одном изображении
+    model = YOLO(model_path)
     result = model.predict(source=destination_dir)
-    return result
-
-
-if __name__ == "__main__":
-    model = train("dataset.yaml", 80)
-    predict( model)
+    return result[0].boxes.data
+    #return result
