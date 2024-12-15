@@ -11,7 +11,6 @@ export default {
     handleFiles(event) {
       const files = event.target.files;
       console.log("Выбранные файлы:", files);
-      // Загрузите файлы на сервер или обработайте локально
     },
   },
 };

@@ -1,12 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Parser from '../views/ParserView.vue';
 import HomeView from '../views/HomeView.vue';
 
 const routes = [
     {
+        path: '/parser',
+        name: 'Parser',
+        component: Parser,
+    },
+    {
         path: '/',
         name: 'Home',
-        component: HomeView,
-    },
+        component: HomeView
+    }
 ];
 
 const router = createRouter({

@@ -11,11 +11,9 @@ export default {
   methods: {
     selectModel() {
       console.log("Выбор обученной модели");
-      // Логика выбора обученной модели
     },
     retrainModel() {
       console.log("Переобучение модели");
-      // Логика переобучения модели
     },
   },
 };

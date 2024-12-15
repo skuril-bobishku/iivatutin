@@ -1,119 +1,18 @@
 <template>
-  <div class="page" id="app">
-    <div class="parser">
-      <div class="parse-list">
-        <ul>
-          <li v-for="(item, index) in items" :key="index">
-            <span class="text-url">{{ item }}</span>
-            <button @click="remItem(index)">–</button>
-          </li>
-        </ul>
-      </div>
-      <div class="parse-input">
-        <input
-            type="text"
-            placeholder="Введите URL адрес"
-            v-model="inputURL"
-            @keydown.enter="addItem"
-        />
-        <button @click="addItem">+</button>
-      </div>
-      <div class="parse-config">
-        <input
-            type="text"
-            placeholder="Введите отступ"
-            v-model="inputOffset"
-            @keydown.enter="startParsing"
-        />
-        <input
-            type="text"
-            placeholder="Введите количество"
-            v-model="inputCount"
-            @keydown.enter="startParsing"
-        />
-      </div>
-      <div class="parse-buttons">
-        <button class="start" @click="startParsing">Парсинг</button>
-        <button class="next" @click="nextPage">
-          <svg xmlns="http://www.w3.org/2000/svg"
-               width="32"
-               height="32"
-               viewBox="0 0 24 20" >
-            <path fill="none"
-                 stroke="#ffffff"
-                 stroke-linecap="round"
-                 stroke-linejoin="round"
-                 stroke-width="2"
-                 d="m21 12l-5-5m5 5l-5 5m5-5H3" ></path>
-          </svg>
-        </button>
-      </div>
-    </div>
+  <div id="app">
+    <router-view />
   </div>
 </template>
 
 <script>
 export default {
   name: "App",
-  data() {
-    return {
-      inputURL: '',
-      inputOffset: '',
-      inputCount: '',
-      items: [],
-    };
-  },
-  methods: {
-    addItem() {
-      if (this.inputURL.trim() !== '') {
-        this.items.push(this.inputURL.trim());
-        this.inputURL = '';
-      }
-    },
-    remItem(index) {
-      this.items.splice(index, 1);
-    },
-    async startParsing() {
-      const count = this.inputCount.trim();
-      const offset = this.inputOffset.trim();
-
-      this.inputOffset = '';
-      this.inputCount = '';
-
-      if (this.items.length === 0) {
-        alert("No URLs in the list!");
-        return;
-      }
-
-      try {
-        const requests = this.items.map(url => {
-          const encodedURL = encodeURIComponent(url);
-          return fetch(`http://localhost:8100/parse?url=${encodedURL}&count=${count}&skip=${offset}`)
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-              });
-        });
-
-        const results = await Promise.all(requests);
-        console.log("Results from all URLs:", results);
-
-        const allItems = results.flatMap(result => result.items || []);
-        this.items = allItems;
-
-      } catch (error) {
-        console.error("Error parsing data:", error);
-      }
-    }
-  },
+  methods: {},
 };
 </script>
 
 <style>
 #app {
   text-align: center;
-  margin-top: 50px;
 }
 </style>

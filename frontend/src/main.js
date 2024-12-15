@@ -8,5 +8,6 @@ import '@/assets/parse-input.css';
 import '@/assets/parse-config.css';
 import '@/assets/parse-buttons.css';
 
-//createApp(App).use(router).mount('#app');
-createApp(App).mount('#app');
+const app = createApp(App);
+app.use(router);
+app.mount('#app')
