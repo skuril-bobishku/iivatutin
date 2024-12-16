@@ -1,5 +1,4 @@
 <template>
-  <div class="page">
     <div class="parser">
       <div class="parse-list">
         <ul>
@@ -34,7 +33,7 @@
       </div>
       <div class="parse-buttons">
         <button class="start" @click="startParsing">Парсинг</button>
-        <button class="next" @click="nextPage">
+        <button class="next" :disabled="isFileUploaded" @click="nextPage">
           <svg xmlns="http://www.w3.org/2000/svg"
                width="32"
                height="32"
@@ -49,10 +48,15 @@
         </button>
       </div>
     </div>
-  </div>
 </template>
 
 <script>
+import '@/assets/parser/parser.css';
+import '@/assets/parser/parse-list.css';
+import '@/assets/parser/parse-input.css';
+import '@/assets/parser/parse-config.css';
+import '@/assets/parser/parse-buttons.css';
+
 export default {
   name: "ParserView",
   data() {
@@ -88,7 +92,8 @@ export default {
       try {
         const requests = this.items.map(url => {
           const encodedURL = encodeURIComponent(url);
-          return fetch("http://localhost:8100/parse?url=${encodedURL}&count=${count}&skip=${offset}")
+
+          return fetch(`http://127.0.0.1:8100/parse?url=${encodedURL}&count=${count}&skip=${offset}`)
               .then(response => {
                 if (!response.ok) {
                   throw new Error("HTTP error! status: ${response.status}");

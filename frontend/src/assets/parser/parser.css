@@ -1,9 +1,9 @@
-body {
+html {
     margin: 0;
     padding: 0;
 }
 
-.page {
+body {
     background-color: #0a1550;
     min-height: 100vh;
     margin: 0;
@@ -14,8 +14,9 @@ body {
 }
 
 .parser {
-    width: 500px;
-    height: 400px;
+    width: 1000px;
+    height: 600px;
+    //min-height: 600px;
     padding: 50px 50px;
     margin: 0 auto;
     background-color: white;
