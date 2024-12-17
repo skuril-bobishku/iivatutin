@@ -1,11 +1,13 @@
 <template>
-  <div>
-    <h3>Загрузка данных для обучения или распознавания</h3>
+  <div class="file-uploader">
+    <h3>Загрузка .zip для обучения или распознавания</h3>
     <input type="file" multiple @change="handleFiles" />
   </div>
 </template>
 
 <script>
+import '../assets/file-uploader/file-uploader.css'
+
 export default {
   methods: {
     handleFiles(event) {
