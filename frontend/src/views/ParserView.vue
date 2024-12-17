@@ -61,6 +61,8 @@ export default {
   name: "ParserView",
   data() {
     return {
+      serverUrl: import.meta.env.VITE_SERVER_DOMAIN,
+      serverPort: import.meta.env.VITE_SERVER_PORT,
       inputURL: "",
       inputOffset: "",
       inputCount: "",
@@ -93,10 +95,10 @@ export default {
         const requests = this.items.map(url => {
           const encodedURL = encodeURIComponent(url);
 
-          return fetch(`http://127.0.0.1:8100/parse?url=${encodedURL}&count=${count}&skip=${offset}`)
+          return fetch(`http://${serverUrl}:${serverPort}/parse?url=${encodedURL}&count=${count}&skip=${offset}`)
               .then(response => {
                 if (!response.ok) {
-                  throw new Error("HTTP error! status: ${response.status}");
+                  throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 return response.json();
               });

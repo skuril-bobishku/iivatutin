@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div>
+    <div class="controls">
       <ParserView v-show="currentStage === 'parser'" />
       <FileUploader v-show="currentStage === 'uploader'" />
       <ModelSelector v-show="currentStage === 'uploader'" />
@@ -8,14 +8,19 @@
       <LogOutput v-show="currentStage === 'train'" />
     </div>
     <div class="navigation">
-      <button></button>
+      <button
+        v-for="(item, index) in menuList"
+        :key="index"
+        :class="{'nav-button':true, active: activeIndex === index }"
+        @click="setActive(index)"
+      ></button>
     </div>
   </div>
-
 </template>
 
 <script>
 import '@/assets/home/home.css'
+import '@/assets/navigation.css'
 
 import FileUploader from "../components/FileUploader.vue";
 import ModelSelector from "../components/ModelSelector.vue";
@@ -34,12 +39,19 @@ export default {
   },
   data() {
     return {
+      activeIndex: 0,
       currentStage: "uploader",
+      menuList: ["parser", "namer", "uploader", "selector"],
       inputOffset: "",
       inputCount: "",
-      items: [],
     };
   },
+  methods: {
+    setActive(index) {
+      this.activeIndex = index;
+      this.currentStage = this.menuList[index];
+    }
+  }
 };
 </script>
 
