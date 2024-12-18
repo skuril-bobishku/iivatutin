@@ -9,7 +9,7 @@
     </div>
     <div class="navigation">
       <button
-        v-for="(item, index) in menuList"
+        v-for="(index) in menuList"
         :key="index"
         :class="{'nav-button':true, active: activeIndex === index }"
         @click="setActive(index)"
