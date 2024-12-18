@@ -1,14 +1,15 @@
 <template>
   <div class="home">
-    <div>
-      <!--<button class="input-button">Кнопка</button>
-      <input type="text" class="input-text" placeholder="Поле для ввода">-->
-      <ParserView v-show="currentStage === 'parser'"
-                  @nextPage="nextPage" />
+    <div class="content">
+      <ParserPhoto v-show="currentStage === 'parser'"
+                   @nextPage="nextPage" />
       <ProjectNamer v-show="currentStage === 'namer'"
                     :pName="projectName"
                     @nextPage="nextPage" />
-      <FileUploader v-show="currentStage === 'uploader'" />
+      <FileUploader v-show="currentStage === 'uploader'"
+                    :pName="projectName"
+                    :fPath="filePath"
+                    @nextPageTrain="nextPageTrain"/>
       <ModelSelector v-show="currentStage === 'selector'" />
       <!--<ChartDisplay v-show="currentStage === 'train'" />
       <LogOutput v-show="currentStage === 'train'" />-->
@@ -33,7 +34,7 @@ import '@/assets/home/input-text.css'
 import '@/assets/home/input-button.css'
 import '@/assets/home/content-table.css'
 
-import ParserView from "@/views/ParserPhoto.vue";
+import ParserPhoto from "@/views/ParserPhoto.vue";
 import ProjectNamer from "@/components/ProjectNamer.vue"
 import FileUploader from "@/components/FileUploader.vue";
 import ModelSelector from "@/components/ModelSelector.vue";
@@ -44,7 +45,7 @@ import LogOutput from "@/components/LogOutput.vue";
 export default {
   name: "HomeView",
   components: {
-    ParserView,
+    ParserPhoto,
     ProjectNamer,
     FileUploader,
     ModelSelector,
@@ -60,12 +61,18 @@ export default {
       currentStage: "parser",
       menuList: ["parser", "namer", "uploader", "selector", "trainer"],
       projectName: "",
+      filePath: "",
     };
   },
   methods: {
     nextPage(name) {
       this.setActive(this.activeIndex + 1);
       this.projectName = name;
+    },
+    nextPageTrain(pName, fPath) {
+      this.setActive(this.activeIndex + 1);
+      this.projectName = pName;
+      this.filePath = fPath;
     },
     setActive(index) {
       this.activeIndex = index;

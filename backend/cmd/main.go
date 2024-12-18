@@ -16,8 +16,6 @@ func main() {
 	app := fiber.New(fiberCFG)
 	app.Use(cors.New())
 
-	app.Use(cors.New())
-
 	server.SetRoutes(app)
 
 	if err := app.Listen(":" + config.SetServerPort()); err != nil {

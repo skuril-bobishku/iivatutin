@@ -1,3 +1,10 @@
+.file-uploader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
 .file-uploader h3 {
     font-size: 24px;
     font-weight: bold;
@@ -7,6 +14,8 @@
     padding: 2px;
     font-size: 16px;
     font-weight: bold;
+    width: 60%;
+    margin-left: 30%;
 }
 
 .file-uploader input[type="file"]::-webkit-file-upload-button {
@@ -22,14 +31,5 @@
 }
 
 .file-uploader button {
-    font-size: 16px;
-    font-weight: bold;
-    padding: 4px 10px;
-    margin-right: 20px;
-    color: white;
-    background: #0a1550;
-    border: none;
-    border-radius: 4px;
-//outline: 2px solid #0a1550;
-    box-sizing: border-box;
+    width: 40%;
 }

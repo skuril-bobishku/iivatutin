@@ -2,22 +2,41 @@
   <div class="content-view file-uploader">
     <h3>Загрузка .zip для обучения или распознавания</h3>
     <input type="file" multiple @change="handleFiles" />
-    <button @click="uploadFile" >Загрузка</button>
+    <button class="input-button"
+        @click="uploadFile" >Загрузка</button>
   </div>
 </template>
 
 <script>
+import {getPort, getUrl} from "@/env.js";
 import '../assets/file-uploader/file-uploader.css'
-import { EventBus } from "@/eventBus.js";
 
 export default {
+  name: "FileUploader",
+  props: {
+    pName: {
+      type: String,
+      required: true,
+    },
+    fPath: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
-      serverUrl: import.meta.env.VITE_SERVER_DOMAIN,
-      serverPort: import.meta.env.VITE_SERVER_PORT,
+      projectName: this.pName,
+      filePath: this.fPath,
       file: null,
-      filePath: "",
     };
+  },
+  watch: {
+    pName(newName) {
+      this.projectName = newName;
+    },
+    fPath(newPath) {
+      this.filePath = newPath;
+    },
   },
   methods: {
     handleFiles(event) {
@@ -33,26 +52,31 @@ export default {
       formData.append("file", this.file);
 
       try {
-        const response = await fetch(`http://${this.serverUrl}:${this.serverPort}/upload`, {
+        const serverUrl = getUrl('VITE_API_SERVER_URL');
+        const serverPort = getPort('VITE_API_SERVER_PORT');
+
+        const response = await fetch(`http://${serverUrl}:${serverPort}/upload`, {
           method: "POST",
           body: formData
         });
 
         if (!response.ok) {
-          throw new Error("Upload failed");
+          throw new Error("Ошибка загрузки");
         }
 
         if (response.status === 201) {
           const data = await response.json();
           this.filePath = data.path;
-          EventBus.sFilePath(this.filePath);
-          alert("File uploaded successfully!");
+          alert("Успешная загрузка");
+          this.nextPage();
         }
       } catch (error) {
-        console.error("Error:", error);
-        alert("Error uploading file");
+        alert(`Ошибка загрузки: ${error}`);
       }
-    }
+    },
+    nextPage() {
+      this.$emit('nextPageTrain', this.projectName, this.filePath);
+    },
   },
 };
 </script>

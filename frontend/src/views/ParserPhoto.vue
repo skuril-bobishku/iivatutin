@@ -78,7 +78,7 @@ export default {
       items: [],
       inputOffset: "",
       inputCount: "",
-      isFilesUploaded: true,
+      isFilesUploaded: false,
       folderName: "",
     };
   },
@@ -137,7 +137,8 @@ export default {
               } else {
                 throw new Error("No 'path' field in the response.");
               }
-          });
+            })
+            .then(this.nextPage);
         });
 
         const results = await Promise.all(requests);
