@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import Parser from '../views/ParserView.vue';
+import Parser from '../views/ParserPhoto.vue';
 import HomeView from '../views/HomeView.vue';
 
 const routes = [

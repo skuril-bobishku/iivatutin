@@ -1,0 +1,26 @@
+.input-button {
+    font-family: system-ui;
+    width: 100%;
+    padding: 4px 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: black;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline-color: #0a1550;
+    box-sizing: border-box;
+}
+
+.input-button:hover {
+    outline: 2px solid #0a1550;
+    border: none;
+    padding: 5px 0;
+}
+
+.input-button:active {
+    color: white;
+    background-color: #0a1550;
+    border: none;
+    padding: 5px 0;
+}

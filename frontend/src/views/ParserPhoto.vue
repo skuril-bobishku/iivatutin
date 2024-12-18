@@ -1,42 +1,56 @@
 <template>
-    <div class="parser">
-      <div class="parse-list">
-        <ul>
+    <div class="content-view">
+      <div class="parser-list">
+        <ul class="content-table">
           <li v-for="(item, index) in items" :key="index">
             <span class="text-url">{{ item }}</span>
-            <button @click="remItem(index)">–</button>
+            <button
+                v-show="currentStage === 'parser'"
+                @click="remItem(index)">–</button>
+            <span class="indicator"></span>
           </li>
         </ul>
       </div>
-      <div class="parse-input">
+      <div class="parser-input">
         <input
             type="text"
+            class="input-text"
             placeholder="Введите URL адрес"
             v-model="inputURL"
             @keydown.enter="addItem"
         />
-        <button @click="addItem">+</button>
+        <button
+            class="input-button"
+            @click="addItem"
+        >+</button>
       </div>
-      <div class="parse-config">
+      <div class="parser-config">
         <input
             type="text"
+            class="input-text"
             placeholder="Введите отступ"
             v-model="inputOffset"
             @keydown.enter="startParsing"
         />
         <input
             type="text"
+            class="input-text"
             placeholder="Введите количество"
             v-model="inputCount"
             @keydown.enter="startParsing"
         />
       </div>
-      <div class="parse-buttons">
-        <button class="start" @click="startParsing">Парсинг</button>
-        <button class="next" :disabled="isFileUploaded" @click="nextPage">
+      <div class="parser-buttons">
+        <button class="input-button start"
+                @click="startParsing"
+        >Парсинг</button>
+        <button class="input-button next"
+                v-show="isFileUploaded"
+                @click="nextPage"
+        >
           <svg xmlns="http://www.w3.org/2000/svg"
-               width="32"
-               height="32"
+               width="24"
+               height="24"
                viewBox="0 0 24 20">
             <path fill="none"
                   stroke="#ffffff"
@@ -51,11 +65,10 @@
 </template>
 
 <script>
-import '@/assets/parser/parser.css';
-import '@/assets/parser/parse-list.css';
-import '@/assets/parser/parse-input.css';
-import '@/assets/parser/parse-config.css';
-import '@/assets/parser/parse-buttons.css';
+import '@/assets/parser/parser-list.css';
+import '@/assets/parser/parser-input.css';
+import '@/assets/parser/parser-config.css';
+import '@/assets/parser/parser-buttons.css';
 
 export default {
   name: "ParserView",
@@ -65,6 +78,7 @@ export default {
       inputOffset: "",
       inputCount: "",
       items: [],
+      isFileUploaded: false,
     };
   },
   methods: {

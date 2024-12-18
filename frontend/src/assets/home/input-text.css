@@ -1,0 +1,18 @@
+.input-text {
+    font-family: system-ui;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline-color: #0a1550;
+    box-sizing: border-box;
+}
+
+.input-text:hover,
+.input-text:active,
+.input-text:focus {
+    outline: 2px solid #0a1550;
+    border: none;
+    padding: 11px;
+}

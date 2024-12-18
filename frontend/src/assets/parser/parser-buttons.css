@@ -1,0 +1,31 @@
+.parser-buttons {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.parser-buttons button {
+    width: 15%;
+}
+
+.parser-buttons .start {
+    height: 40px;
+    color: white;
+    background-color: #0a1550;
+}
+
+.parser-buttons .start:active {
+    color: #0a1550;
+    background-color: white;
+}
+
+.parser-buttons .next {
+    background-color: #ccc;
+}
+
+.parser-buttons .next:active {
+    background-color: #0a1550;
+}

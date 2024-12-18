@@ -1,5 +1,5 @@
 <template>
-  <div class="file-uploader">
+  <div class="content-view file-uploader">
     <h3>Загрузка .zip для обучения или распознавания</h3>
     <input type="file" multiple @change="handleFiles" />
   </div>
