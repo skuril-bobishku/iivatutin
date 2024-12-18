@@ -3,8 +3,11 @@
     <div>
       <!--<button class="input-button">Кнопка</button>
       <input type="text" class="input-text" placeholder="Поле для ввода">-->
-      <ParserView v-show="currentStage === 'parser'" />
-      <ProjectNamer v-show="currentStage === 'namer'" />
+      <ParserView v-show="currentStage === 'parser'"
+                  @nextPage="nextPage" />
+      <ProjectNamer v-show="currentStage === 'namer'"
+                    :pName="projectName"
+                    @nextPage="nextPage" />
       <FileUploader v-show="currentStage === 'uploader'" />
       <ModelSelector v-show="currentStage === 'selector'" />
       <!--<ChartDisplay v-show="currentStage === 'train'" />
@@ -57,9 +60,14 @@ export default {
       activeIndex: 0,
       currentStage: "parser",
       menuList: ["parser", "namer", "uploader", "selector", "trainer"],
+      projectName: "",
     };
   },
   methods: {
+    nextPage(name) {
+      this.setActive(this.activeIndex + 1);
+      this.projectName = name;
+    },
     setActive(index) {
       this.activeIndex = index;
       this.currentStage = this.menuList[index];

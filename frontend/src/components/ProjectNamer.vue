@@ -1,13 +1,13 @@
 <template>
   <div class="content-view project-namer">
     <h3>Назовите проект</h3>
-    <input
-        type="text"
-        class="input-text"
-        placeholder="Введите название"
+    <input type="text"
+           class="input-text"
+           placeholder="Введите название"
+           v-model="projectName"
     />
-    <button
-        class="input-button"
+    <button class="input-button"
+            @click="nextPage"
     >Создать проект</button>
   </div>
 </template>
@@ -17,6 +17,26 @@ import '@/assets/project-namer/project-namer.css'
 
 export default {
   name: "ProjectNamer",
-
+  props: {
+    pName: {
+      type: String,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      projectName: this.pName,
+    };
+  },
+  watch: {
+    pName(newName) {
+      this.projectName = newName;
+    },
+  },
+  methods: {
+    nextPage() {
+      this.$emit('nextPage', this.projectName);
+    },
+  },
 }
 </script>

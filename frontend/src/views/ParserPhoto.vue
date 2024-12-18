@@ -5,8 +5,7 @@
           <li v-for="(item, index) in items" :key="index">
             <span class="text-url">{{ item }}</span>
             <button
-                v-show="currentStage === 'parser'"
-                @click="remItem(index)">–</button>
+                @click="remItem(index)">–</button><!--v-show="currentStage === 'parser'"-->
             <span class="indicator"></span>
           </li>
         </ul>
@@ -45,7 +44,7 @@
                 @click="startParsing"
         >Парсинг</button>
         <button class="input-button next"
-                v-show="isFileUploaded"
+                v-show="isFilesUploaded"
                 @click="nextPage"
         >
           <svg xmlns="http://www.w3.org/2000/svg"
@@ -65,6 +64,7 @@
 </template>
 
 <script>
+import { getUrl, getPort } from '@/env.js';
 import '@/assets/parser/parser-list.css';
 import '@/assets/parser/parser-input.css';
 import '@/assets/parser/parser-config.css';
@@ -75,10 +75,11 @@ export default {
   data() {
     return {
       inputURL: "",
+      items: [],
       inputOffset: "",
       inputCount: "",
-      items: [],
-      isFileUploaded: false,
+      isFilesUploaded: true,
+      folderName: "",
     };
   },
   methods: {
@@ -95,25 +96,48 @@ export default {
       const count = this.inputCount.trim();
       const offset = this.inputOffset.trim();
 
-      this.inputOffset = "";
-      this.inputCount = "";
+      if (!count || !offset) {
+        alert("Пожалуйста, заполните оба поля: количество и отступ!");
+        return;
+      }
+
+      if (!this.isValidNumber(count)) {
+        alert("Введите корректное количество (целое число)!");
+        return;
+      }
+
+      if (!this.isValidNumber(offset)) {
+        alert("Введите корректный отступ (целое число)!");
+        return;
+      }
 
       if (this.items.length === 0) {
-        alert("No URLs in the list!");
+        alert("Отсутствуют URL в списке!");
         return;
       }
 
       try {
         const requests = this.items.map(url => {
+          const serverUrl = getUrl('VITE_API_SERVER_URL');
+          const serverPort = getPort('VITE_API_SERVER_PORT');
           const encodedURL = encodeURIComponent(url);
 
-          return fetch(`http://127.0.0.1:8100/parse?url=${encodedURL}&count=${count}&skip=${offset}`)
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error("HTTP error! status: ${response.status}");
-                }
-                return response.json();
-              });
+          return fetch(`http://${serverUrl}:${serverPort}/parse?url=${encodedURL}&count=${count}&skip=${offset}`)
+            .then(response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(data => {
+              if (data && data.path) {
+                this.folderName = data.path;
+                alert(`Сохранено в ${this.folderName}`);
+                this.isFilesUploaded = true;
+              } else {
+                throw new Error("No 'path' field in the response.");
+              }
+          });
         });
 
         const results = await Promise.all(requests);
@@ -127,7 +151,11 @@ export default {
       }
     },
     nextPage() {
-      this.$router.push({ name: "Home" });
+      //this.$router.push({ name: "Home" });
+      this.$emit('nextPage', this.folderName);
+    },
+    isValidNumber(value) {
+      return !isNaN(value) && Number.isInteger(Number(value)) && Number(value) >= 0;
     },
   },
 }
