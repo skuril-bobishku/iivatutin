@@ -1,11 +1,15 @@
-.model-selector {
-    padding: 20px;
-    border-radius: 4px;
-    outline: 2px solid #0a1550;
+.model-selector h3 {
+    font-size: 24px;
+    font-weight: bold;
+}
 
+.selector-buttons {
     display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 20px;
+}
+
+.selector-buttons button {
+    width: 40%;
 }

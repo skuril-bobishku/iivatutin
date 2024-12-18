@@ -1,0 +1,15 @@
+.project-namer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.project-namer h3 {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.project-namer button {
+    width: 40%;
+}

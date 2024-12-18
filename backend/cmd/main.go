@@ -14,6 +14,7 @@ func main() {
 	}
 
 	app := fiber.New(fiberCFG)
+	app.Use(cors.New())
 
 	app.Use(cors.New())
 

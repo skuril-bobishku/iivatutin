@@ -1,0 +1,23 @@
+.navigation {
+    margin: 0 auto;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.nav-button {
+    padding: 4px;
+    background-color: white;
+    border: none;
+    border-radius: 4px;
+    outline: 2px solid #0a1550;
+}
+
+.nav-button.active {
+    background-color: #0a1550;
+    scale: 1.75;
+    outline: none;
+}

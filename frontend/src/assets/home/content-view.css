@@ -1,0 +1,11 @@
+.content-view {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    border: none;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+}
