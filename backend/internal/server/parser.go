@@ -14,13 +14,15 @@ import (
 	"time"
 )
 
-func checkQuery(c *fiber.Ctx, url *string, count *int, skip *int) func() (int, fiber.Map) {
+func checkQuery(c *fiber.Ctx, url *string, name *string, count *int, skip *int) func() (int, fiber.Map) {
 	maxCount := config.GetMaxImagesCount()
 
 	*url = c.Query("url", "")
 	if *url == "" {
 		return stc.NotRequiredUrl
 	}
+
+	*name = c.Query("name", "")
 
 	*count = c.QueryInt("count", maxCount)
 	if *count == maxCount {

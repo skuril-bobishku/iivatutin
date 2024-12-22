@@ -6,10 +6,31 @@ import (
 	"path/filepath"
 )
 
+func uploadModel(c *fiber.Ctx) error {
+	directory := config.GetServerDirectory()
+
+	projectName := c.Query("name", "")
+	if projectName != "" {
+		directory += projectName + "/"
+	}
+
+	status := saveFile(c, directory, ".pt")
+	code, json := status()
+	if code == fiber.StatusContinue {
+		return c.Status(fiber.StatusCreated).JSON(json)
+	}
+	return c.Status(code).JSON(json)
+}
+
 func uploadZIP(c *fiber.Ctx) error {
 	directory := config.GetServerDirectory()
 
-	status := saveZIP(c, directory)
+	projectName := c.Query("name", "")
+	if projectName != "" {
+		directory += projectName + "/"
+	}
+
+	status := saveFile(c, directory, ".zip")
 	code, json := status()
 	filename, exists := json["path"].(string)
 	if !exists {
@@ -22,11 +43,11 @@ func uploadZIP(c *fiber.Ctx) error {
 }
 
 func parseImages(c *fiber.Ctx) error {
-	var url string
+	var url, name string
 	var count, skip int
 	images := &[]string{}
 
-	status := checkQuery(c, &url, &count, &skip)
+	status := checkQuery(c, &url, &name, &count, &skip)
 	code, json := status()
 	if code != fiber.StatusContinue {
 		return c.Status(code).JSON(json)
@@ -39,7 +60,7 @@ func parseImages(c *fiber.Ctx) error {
 	}
 
 	dir := config.GetServerDirectory()
-	dir = filepath.Join(dir, getUrlName(url, 2))
+	dir = filepath.Join(dir, name, getUrlName(url, 2))
 
 	status = downloadImages(dir, images)
 	code, json = status()

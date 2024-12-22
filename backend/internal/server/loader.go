@@ -12,19 +12,19 @@ import (
 	"strings"
 )
 
-func saveZIP(c *fiber.Ctx, directory string) func() (int, fiber.Map) {
+func saveFile(c *fiber.Ctx, directory string, extension string) func() (int, fiber.Map) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		return stc.NotRequired
 	}
 
-	if filepath.Ext(file.Filename) != ".zip" {
+	if filepath.Ext(file.Filename) != extension {
 		return stc.BadFileFormat
 	}
 
 	_, err = os.Stat(directory)
 	if os.IsNotExist(err) {
-		err = os.Mkdir(directory, os.ModePerm)
+		err = os.MkdirAll(directory, os.ModePerm)
 		if err != nil {
 			return stc.NotCreatedDirectory
 		}

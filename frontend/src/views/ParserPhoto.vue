@@ -42,7 +42,7 @@
       <div class="parser-buttons">
         <button class="input-button start"
                 @click="startParsing"
-        >Парсинг</button>
+        >Парсинг</button><!--@click="testNext"-->
         <button class="input-button next"
                 v-show="isFilesUploaded"
                 @click="nextPage"
@@ -72,6 +72,12 @@ import '@/assets/parser/parser-buttons.css';
 
 export default {
   name: "ParserView",
+  props: {
+    pName: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       inputURL: "",
@@ -80,7 +86,13 @@ export default {
       inputCount: "",
       isFilesUploaded: false,
       folderName: "",
+      projectName: this.pName,
     };
+  },
+  watch: {
+    pName(newName) {
+      this.projectName = newName;
+    },
   },
   methods: {
     addItem() {
@@ -91,6 +103,9 @@ export default {
     },
     remItem(index) {
       this.items.splice(index, 1);
+    },
+    testNext() {
+      this.$emit('nextPage', this.projectName, '');
     },
     async startParsing() {
       const count = this.inputCount.trim();
@@ -121,8 +136,9 @@ export default {
           const serverUrl = getUrl('VITE_API_SERVER_URL');
           const serverPort = getPort('VITE_API_SERVER_PORT');
           const encodedURL = encodeURIComponent(url);
+          const pathName = this.projectName + '/parsed/';
 
-          return fetch(`http://${serverUrl}:${serverPort}/parse?url=${encodedURL}&count=${count}&skip=${offset}`)
+          return fetch(`http://${serverUrl}:${serverPort}/parse?url=${encodedURL}&name=${pathName}&count=${count}&skip=${offset}`)
             .then(response => {
               if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -141,11 +157,11 @@ export default {
             .then(this.nextPage);
         });
 
-        const results = await Promise.all(requests);
+        /*const results = await Promise.all(requests);
         console.log("Results from all URLs:", results);
 
         const allItems = results.flatMap(result => result.items || []);
-        this.items = allItems;
+        this.items = allItems;*/
 
       } catch (error) {
         console.error("Error parsing data:", error);
@@ -153,7 +169,8 @@ export default {
     },
     nextPage() {
       //this.$router.push({ name: "Home" });
-      this.$emit('nextPage', this.folderName);
+      //this.$emit('nextPage', this.folderName);
+      this.$emit('nextPage', this.projectName, '');
     },
     isValidNumber(value) {
       return !isNaN(value) && Number.isInteger(Number(value)) && Number(value) >= 0;

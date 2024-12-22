@@ -8,6 +8,7 @@
     />
     <button class="input-button"
             @click="nextPage"
+            :disabled="!this.projectName.trim()"
     >Создать проект</button>
   </div>
 </template>
@@ -34,8 +35,17 @@ export default {
     },
   },
   methods: {
+    validatePath(name) {
+      const forbiddenChars = /[./\\*?|]/;
+      return !forbiddenChars.test(name);
+    },
     nextPage() {
-      this.$emit('nextPage', this.projectName);
+      if (!this.validatePath(this.projectName)) {
+        alert("Использованы запрещённые символы!");
+        return;
+      }
+
+      this.$emit('nextPage', this.projectName, '', '');
     },
   },
 }

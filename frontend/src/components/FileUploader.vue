@@ -1,9 +1,13 @@
 <template>
   <div class="content-view file-uploader">
     <h3>Загрузка .zip для обучения или распознавания</h3>
-    <input type="file" multiple @change="handleFiles" />
+    <input class="input-file"
+           type="file"
+           @change="handleFile" />
     <button class="input-button"
-        @click="uploadFile" >Загрузка</button>
+      @click="uploadFile"
+      :disabled="!this.file"
+    >Загрузить архив</button>
   </div>
 </template>
 
@@ -39,7 +43,7 @@ export default {
     },
   },
   methods: {
-    handleFiles(event) {
+    handleFile(event) {
       this.file = event.target.files[0];
     },
     async uploadFile(){
@@ -55,7 +59,8 @@ export default {
         const serverUrl = getUrl('VITE_API_SERVER_URL');
         const serverPort = getPort('VITE_API_SERVER_PORT');
 
-        const response = await fetch(`http://${serverUrl}:${serverPort}/upload`, {
+        console.log(`http://${serverUrl}:${serverPort}/upload?=name=${this.projectName}`)
+        const response = await fetch(`http://${serverUrl}:${serverPort}/upload?name=${this.projectName}`, {
           method: "POST",
           body: formData
         });
@@ -75,7 +80,7 @@ export default {
       }
     },
     nextPage() {
-      this.$emit('nextPageTrain', this.projectName, this.filePath);
+      this.$emit('nextPage', this.projectName, '', this.filePath);
     },
   },
 };

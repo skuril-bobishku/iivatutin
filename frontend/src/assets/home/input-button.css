@@ -3,7 +3,7 @@
     width: 100%;
     padding: 4px 0;
     font-size: 24px;
-    font-weight: bold;
+    font-weight: normal;
     color: black;
     background-color: white;
     border: 1px solid #ccc;
@@ -21,6 +21,14 @@
 .input-button:active {
     color: white;
     background-color: #0a1550;
+    border: none;
+    padding: 5px 0;
+}
+
+.input-button:disabled {
+    color: #ccc;
+    outline-color: #ccc;
+    background-color: white;
     border: none;
     padding: 5px 0;
 }
