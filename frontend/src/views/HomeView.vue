@@ -99,7 +99,9 @@ export default {
 
       this.setActive(nextPage);
 
-      this.projectName = pName;
+      if (this.projectName !== undefined || this.projectName !== '') {
+        this.projectName = mName
+      }
 
       if (this.modelName !== undefined || this.modelName !== '') {
         this.modelName = mName
