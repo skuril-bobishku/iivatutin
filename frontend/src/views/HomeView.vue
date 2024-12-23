@@ -7,7 +7,9 @@
       <ModelSelector v-show="menuList[currentStage] === 'selector'"
                      :pName="projectName"
                      :mName="modelName"
-                     @nextPage="nextPage" />
+                     :mEpochs="parameters.epochs"
+                     :mBatch="parameters.batch"
+                     @modelNext="modelNext" />
       <ParserPhoto v-show="menuList[currentStage] === 'parser'"
                    :pName="projectName"
                    @nextPage="nextPage" />
@@ -15,7 +17,12 @@
                     :pName="projectName"
                     :fPath="filePath"
                     @nextPage="nextPage"/>
-      <TrainModel v-show="menuList[currentStage] === 'trainer'" />
+      <TrainModel v-show="menuList[currentStage] === 'trainer'"
+                  :pName="projectName"
+                  :mName="modelName"
+                  :fPath="filePath"
+                  :mEpochs="parameters.epochs"
+                  :mBatch="parameters.batch" />
       <!--<ChartDisplay v-show="currentStage === 'train'" />
       <LogOutput v-show="currentStage === 'train'" />-->
     </div>
@@ -68,13 +75,30 @@ export default {
         2: 'parser',
         3: 'uploader',
         4: 'trainer',
+        5: 'tester'
       },
       projectName: '',
       modelName: '',
       filePath: '',
+      parameters: {
+        epochs: 50,
+        batch: 16,
+      },
     };
   },
   methods: {
+    modelNext(pName, mName, fPath, ep, ba) {
+      this.parameters.epochs = ep;
+      this.parameters.batch = ba;
+      /*if (this.parameters.epochs !== undefined || this.parameters.epochs !== -1) {
+        this.parameters.epochs = ep;
+      }
+
+      if (this.parameters.batch !== undefined || this.parameters.batch !== -1) {
+        this.parameters.batch = ba;
+      }*/
+      this.nextPage(pName,mName, fPath);
+    },
     nextPage(pName, mName, fPath) {
       let nextPage = parseInt(this.currentStage, 10);
 
@@ -90,7 +114,10 @@ export default {
           break;
 
         case 'selector':
-          nextPage = nextPage + 3;
+          nextPage = nextPage + 2;
+          if (this.parameters.epochs === -1 && this.parameters.batch === -1) {
+            nextPage = nextPage + 2;
+          }
           break;
 
         default:
@@ -100,7 +127,7 @@ export default {
       this.setActive(nextPage);
 
       if (this.projectName !== undefined || this.projectName !== '') {
-        this.projectName = mName
+        this.projectName = pName
       }
 
       if (this.modelName !== undefined || this.modelName !== '') {
@@ -117,7 +144,7 @@ export default {
     },
     menuClick(index) {
       switch (this.menuList[index]) {
-        case 'namer':
+        /*case 'namer':
           //this.setActive(index);
           break;
 
@@ -146,9 +173,10 @@ export default {
           //if (this.filePath.trim()) {
             this.setActive(index);
           //}
-          break;
+          break;*/
 
         default:
+          this.setActive(index);
           break;
       }
     },

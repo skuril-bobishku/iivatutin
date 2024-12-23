@@ -59,7 +59,7 @@ export default {
         const serverUrl = getUrl('VITE_API_SERVER_URL');
         const serverPort = getPort('VITE_API_SERVER_PORT');
 
-        console.log(`http://${serverUrl}:${serverPort}/upload?=name=${this.projectName}`)
+        //console.log(`http://${serverUrl}:${serverPort}/upload?=name=${this.projectName}`)
         const response = await fetch(`http://${serverUrl}:${serverPort}/upload?name=${this.projectName}`, {
           method: "POST",
           body: formData

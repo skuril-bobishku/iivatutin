@@ -1,4 +1,4 @@
-import augmentation_instruments
+import detection.utils.augmentation_instruments as aui
 import glob
 import os
 import random
@@ -27,7 +27,7 @@ def apply_augmentation(img_path, aug_type):
     @img_path: относительный путь к изображению
     @aug_type: тип аугментации из числа "deblur", "gaus_blur", "sp_noise", "brightness", "contrast"
     """
-    image = augmentation_instruments.PictureAugmentation(img_path)
+    image = aui.PictureAugmentation(img_path)
 
     img_root, image_name, img_ext = get_img_data(img_path)
 
@@ -49,10 +49,10 @@ def apply_augmentation(img_path, aug_type):
     is_path(os.path.join(img_root, aug_type))
     # showImage(augmented_image)
 
-    augmentation_instruments.save_image(augmented_image,
-                                        os.path.join(img_root, aug_type),
-                                        image_name,
-                                        suffix="_" + aug_type)
+    aui.save_image(augmented_image,
+                   os.path.join(img_root, aug_type),
+                   image_name,
+                   suffix="_" + aug_type)
 
     # # пересохранить файл разметки с новым именем в папку к изображению
     # shutil.copy(os.path.join(img_root, image_name) + ".txt",
@@ -60,15 +60,15 @@ def apply_augmentation(img_path, aug_type):
 
     # поворот аугментированного изображения на все углы
     for angle in angles:
-        im = augmentation_instruments.YOLORotateBbox(os.path.join(img_root, aug_type, image_name) + "_" + aug_type, img_ext, angle)
+        im = aui.YOLORotateBbox(os.path.join(img_root, aug_type, image_name) + "_" + aug_type, img_ext, angle)
 
         rotated_bbox = im.rotate_yolo_bbox()
         rotated_image = im.rotate_image()
 
-        augmentation_instruments.save_image(rotated_image,
-                                            os.path.join(img_root, aug_type),
-                                            image_name,
-                                            suffix="_" + aug_type + "_" + "rot" + str(angle))
+        aui.save_image(rotated_image,
+                       os.path.join(img_root, aug_type),
+                       image_name,
+                       suffix="_" + aug_type + "_" + "rot" + str(angle))
 
         # bbox_file_name = os.path.join(img_root, aug_type, image_name) + "_" + aug_type + "_" + "rot" + str(
         #     angle) + '.txt'

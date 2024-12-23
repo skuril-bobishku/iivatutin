@@ -1,5 +1,5 @@
 # Детекция
-#numpy               #
+numpy               #
 scikit-build        #
 ultralytics         # YOLOv8
 # Обработка фото
@@ -8,4 +8,5 @@ pillow              # Для обработки изображений
 # Сервер
 fastapi             # Для создания REST API
 uvicorn             # Для запуска сервера
+pydantic
 python-multipart

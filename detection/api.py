@@ -1,23 +1,41 @@
+from click.core import batch
 from fastapi import FastAPI
+from pydantic import BaseModel
 from detection.train import train, predict
 
 app = FastAPI()
 
 model=None
 
+class TrainRequest(BaseModel):
+    pName: str
+    #mName: str
+    fPath: str
+    epochs: int
+    batch: int
+    augmentation: bool
+
 @app.post("/train")
-async def train(path: str):
+async def train(request: TrainRequest):
     """
     Выполнить обучение модели.
 
     Args:
-        path (str): Загруженное изображение.
+        request (TrainRequest): Запрос обучения.
 
     Returns:
         dict: Результаты предсказания.
     """
-    results = train(path, 80)
-    return {"results": results.tolist()}
+
+    project_name = request.pName
+    #model_name = request.mName
+    file_path = request.fPath
+    t_epochs = request.epochs
+    t_batch = request.batch
+    t_aug = request.augmentation
+
+    #results = train(project_name, file_path, t_epochs, t_batch, t_aug)
+    #return {"results": results.tolist()}
 
 
 @app.post("/test")

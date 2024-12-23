@@ -58,15 +58,23 @@ export default {
       type: String,
       required: true,
     },
+    mEpochs: {
+      type: Number,
+      required: true,
+    },
+    mBatch: {
+      type: Number,
+      required: true,
+    },
   },
   data() {
     return {
       projectName: this.pName,
       modelName: this.mName,
+      epochs: this.mEpochs,
+      batch: this.mBatch,
       isLoaded: false,
       doNew: false,
-      epochs: 50,
-      batch: 16,
     };
   },
   watch: {
@@ -75,6 +83,12 @@ export default {
     },
     mName(moName) {
       this.modelName = moName;
+    },
+    mEpochs(ep) {
+      this.epochs = ep;
+    },
+    mBatch(ba) {
+      this.batch = ba;
     },
   },
   methods: {
@@ -89,7 +103,7 @@ export default {
       this.file ? this.isLoaded = true : this.isLoaded = false;
     },
     makeModel() {
-      console.log('make')
+      this.modelNext();
     },
     async uploadFile(){
       if (!this.file) {
@@ -118,14 +132,19 @@ export default {
           this.modelName = data.path;
 
           alert("Успешная загрузка");
-          this.nextPage();
+          this.modelNext();
         }
       } catch (error) {
         alert(`Ошибка загрузки: ${error}`);
       }
     },
-    nextPage() {
-      this.$emit('nextPage', this.projectName, this.modelName, '');
+    modelNext() {
+      if (this.doNew) {
+        this.$emit('modelNext', this.projectName, this.modelName, '', this.epochs, this.batch);
+      }
+      else {
+        this.$emit('modelNext', this.projectName, this.modelName, '', -1, -1);
+      }
     },
   },
 };

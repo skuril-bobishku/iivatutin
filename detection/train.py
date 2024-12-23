@@ -6,21 +6,25 @@ from sklearn.model_selection import train_test_split
 import shutil
 from ultralytics import YOLO
 
-def train(source_dir: str, epochs: int = 50):
+def train(p_name: str, f_path: str, epochs: int = 50, batch: int = 16, do_aug: bool = False):
     """
     Обучение YOLO модели.
 
     Args:
-        source_dir (str): Путь к основному каталогу.
+        p_name (str): Путь к основному каталогу.
+        f_path (str): Путь к датасету.
         epochs (int): Количество эпох обучения.
+        batch (int): Количество batch обучения.
+        do_aug (bool): Делаем аугментацию.
     """
-    class_names = prepare(source_dir)
-    yaml_name = create_yaml(source_dir, class_names)
-    return create_model(yaml_name, epochs, source_dir)
+
+    #class_names = prepare(p_name, f_path, do_aug)
+    #yaml_name = create_yaml(source_dir, class_names)
+    #return create_model(yaml_name, epochs, source_dir)
 
 
 # === ШАГ 1: ПОДГОТОВКА ДАННЫХ ===
-def prepare(source_dir: str):
+def prepare(source_dir: str, f_path: str, do_aug: bool):
     # Список всех классов
     class_names = [folder
                    for folder in os.listdir(source_dir)
