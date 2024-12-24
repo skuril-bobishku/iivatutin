@@ -16,6 +16,8 @@
 </template>
 
 <script>
+import {getPort, getUrl} from "@/env.js";
+
 export default {
   name: "TrainModel",
   props: {
@@ -68,12 +70,62 @@ export default {
     },
   },
   methods: {
-    startAugmentation() {
+    async startAugmentation() {
+      try {
+        const yoloUrl = getUrl('VITE_API_YOLO_URL');
+        const yoloPort = getPort('VITE_API_YOLO_PORT');
 
+        const response = await fetch(`http://${yoloUrl}:${yoloPort}/augment`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fPath: this.filePath,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Ошибка: ${response.status}`);
+        }
+
+        const data = await response.json();
+        alert("Аугментация завершена: " + JSON.stringify(data));
+      } catch (error) {
+        console.error("Ошибка при аугментации:", error);
+        alert("Ошибка при аугментации: " + error.message);
+      }
     },
-    startTrain () {
+    async startTrain () {
+      try {
+        const yoloUrl = getUrl('VITE_API_YOLO_URL');
+        const yoloPort = getPort('VITE_API_YOLO_PORT');
 
-    }
+        const response = await fetch(`http://${yoloUrl}:${yoloPort}/train`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            pName: this.projectName,
+            //mName: this.modelName,
+            fPath: this.filePath,
+            epochs: this.epochs,
+            batch: this.batch,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`Ошибка: ${response.status}`);
+        }
+
+        const data = await response.json();
+        alert("Обучение завершено: " + JSON.stringify(data));
+      } catch (error) {
+        console.error("Ошибка при обучении:", error);
+        alert("Ошибка при обучении: " + error.message);
+      }
+    },
   },
 };
 </script>

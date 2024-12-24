@@ -107,6 +107,7 @@ func unzip(c *fiber.Ctx, directory string, fullname string) func() (int, fiber.M
 	}
 
 	return func() (int, fiber.Map) {
-		return stc.FileUnzip(filepath.Join(directory, fullname))
+		return stc.FileUnzip(directory)
+		//return stc.FileUnzip(filepath.Join(directory, fullname))
 	}
 }

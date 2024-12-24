@@ -85,10 +85,10 @@ export default {
       this.modelName = moName;
     },
     mEpochs(ep) {
-      this.epochs = ep;
+      this.epochs = parseInt(ep, 10);
     },
     mBatch(ba) {
-      this.batch = ba;
+      this.batch = parseInt(ba, 10);
     },
   },
   methods: {

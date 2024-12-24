@@ -125,7 +125,7 @@ class PictureAugmentation(object):
 class YOLORotateBbox(object):
     def __init__(self, filename, image_ext, angle):
         assert os.path.isfile(filename + image_ext)
-        assert os.path.isfile(filename + '.txt')
+        #assert os.path.isfile(filename + '.txt')
 
         self.filename = filename
         self.image_ext = image_ext
